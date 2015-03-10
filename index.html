@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+  <head>
+    <title>AJAX tester</title>
+    <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+  </head>
+  <html>
+      <strong>Server Response Here</strong>
+      <p id="response">Server Response Here... None yet...</p>
+      <hr>
+      <strong>API Method here</strong>
+      <button type="button" id="get">Get Request</button>
+      <button type="button" id="post">Post Request</button>
+      <button type="button" id="put">Put Request</button>
+      <button type="button" id="delete">Delete Request</button>
+      <button type="button" id="patch">Patch Request</button>
+      <hr>
+      <strong>API controller path here</strong>
+      <label for="request">Request here: api/</label>
+      <input type="text" id="request" placeholder="request/here"></input>
+      <hr>
+      <strong>Payload here</strong>
+      <label for="key1">Key 1:</label>
+      <input type="text" id="key1" placeholder="key1"></input>
+      <label for="value1">Value 1:</label>
+      <input type="text" id="value1" placeholder="value1"></input>
+      <hr> 
+      <label for="key2">Key 2:</label>
+      <input type="text" id="key2" placeholder="key2"></input>
+      <label for="value2">Value 2:</label>
+      <input type="text" id="value2" placeholder="value2"></input>
+      <script>
+          $(document).ready(function(){
+              /*
+                This is a function to gather the payload and decide if a key/value pair should be sent.
+                It returns a JSON object.
+              */
+              var get_data = function(){
+                var data = {};
+                var key1 = $("#key1").val() || "key1";
+                var key2 = $("#key2").val() || "key2";
+                var val1 = $("#value1").val();
+                var val2 = $("#value2").val();
+
+                if (val1){
+                  data[key1] = val1;
+                }
+
+                if (val2){
+                  data[key2] = val2;
+                }
+
+                return data;
+              };
+
+
+              /*
+              Generic button listener, it detects the verb via the "id" 
+              (in the future we will keep our truth out of the DOM)
+              It collects the API path, data, and verb and makes the ajax request.
+              */
+
+              $("button").on('click', function(event){
+                var verb = $(event.currentTarget).attr('id');
+                var data = get_data();
+                var request = $("#request").val() || "request/here";
+                /* A message while we wait... */
+                $("#response").html("Request sent... waiting...");
+                $.ajax({
+                  type: verb.toUpperCase(),
+                  url : "api/"+request,
+                  data: data,
+                  success : function(data){
+                      /* The response */
+                    $("#response").html(data);
+                  },
+                  error : function(){
+                      /* Error message */
+                    $("#response").html("Error happened");
+                  }
+                });
+              });
+          });
+      </script>
+  </html>
+</html>
